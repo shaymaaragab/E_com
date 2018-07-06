@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Product;
-use Cart;
 use Darryldecode\Cart\Facades\CartFacade;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 use Illuminate\Http\Request;
 
@@ -59,6 +59,10 @@ class CartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
+    {
+
+    }
+    public function addItems($id)
     {
       $product=Product::find($id);
       Cart::add($id,$product->name,1,$product->price,['size' => 'medium']);

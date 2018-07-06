@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Category;
-use App\Product;
 
-class ProductsController extends Controller
+class AddressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +14,6 @@ class ProductsController extends Controller
     public function index()
     {
         //
-        $product=Product::all();
-        return view('admin.product.index',compact('product'));
     }
 
     /**
@@ -28,8 +24,6 @@ class ProductsController extends Controller
     public function create()
     {
         //
-        $categories=Category::pluck('name','id');
-        return View('admin.product.create',compact('categories'));
     }
 
     /**
@@ -41,17 +35,17 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         //
-        $formInput=$request->except('image');
-        //uploadimage
-        $image=$request->image;
-        if($image)
-        {
-          $imageName=$image->getClientOriginalName();
-          $image->move('images',$imageName);
-          $formInput['image']=$imageName;
-        }
-          Product::create($formInput);
-        return redirect()->route('product.index');
+        $this->validate($request,[
+            'addressline'=>'required',
+            'city'=>'required',
+            'state'=>'required',
+            'zip'=>'required|integer',
+            'phone'=>'required|integer',
+        ]);
+
+        Auth::user()->address()->create($request->all());
+
+        return redirect()->route('checkout.payment');
     }
 
     /**
@@ -96,9 +90,6 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-      $product=Product::find($id);
-      $product->category()->delete();
-      $product->delete();
-      return back();
+        //
     }
 }
